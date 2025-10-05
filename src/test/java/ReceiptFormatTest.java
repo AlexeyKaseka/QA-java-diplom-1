@@ -8,8 +8,7 @@ import praktikum.Burger;
 import praktikum.Ingredient;
 import praktikum.IngredientType;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,38 +42,95 @@ public class ReceiptFormatTest {
     }
 
     @Test
-    public void testIngredientFormat() {
+    public void testSauceIngredientFormat() {
 
         String expectedSauceName = "Соус";
         String expectedSauceLine = "= sauce " + expectedSauceName + " =";
 
-        String expectedFillingName = "Говяжий метеорит";
-        String expectedFillingLine = "= filling " + expectedFillingName + " =";
-
-        String forbiddenSauceType = "SAUCE";
-        String forbiddenFillingType = "FILLING";
 
         when(sauceIngredient.getType()).thenReturn(IngredientType.SAUCE);
         when(sauceIngredient.getName()).thenReturn(expectedSauceName);
-        when(fillingIngredient.getType()).thenReturn(IngredientType.FILLING);
-        when(fillingIngredient.getName()).thenReturn(expectedFillingName);
+
 
         burger.setBuns(bun);
         burger.addIngredient(sauceIngredient);
-        burger.addIngredient(fillingIngredient);
+
 
         String receipt = burger.getReceipt();
 
 
         assertTrue("Соус должен быть в формате = type name =",
                 receipt.contains(expectedSauceLine));
-        assertTrue("Начинка должна быть в формате = type name =",
-                receipt.contains(expectedFillingLine));
+
+
+    }
+
+    @Test
+    public void testSauceIngredientLowcase() {
+
+
+        String forbiddenSauceType = "SAUCE";
+
+
+        when(sauceIngredient.getType()).thenReturn(IngredientType.SAUCE);
+
+
+        burger.setBuns(bun);
+        burger.addIngredient(sauceIngredient);
+
+
+        String receipt = burger.getReceipt();
+
+
         assertFalse("Типы должны быть в нижнем регистре, без SAUCE",
                 receipt.contains(forbiddenSauceType));
+
+    }
+
+
+    @Test
+    public void testFillingIngredientFormat() {
+
+
+        String expectedFillingName = "Говяжий метеорит";
+        String expectedFillingLine = "= filling " + expectedFillingName + " =";
+
+
+        when(fillingIngredient.getType()).thenReturn(IngredientType.FILLING);
+        when(fillingIngredient.getName()).thenReturn(expectedFillingName);
+
+        burger.setBuns(bun);
+        burger.addIngredient(fillingIngredient);
+
+        String receipt = burger.getReceipt();
+
+
+        assertTrue("Начинка должна быть в формате = type name =",
+                receipt.contains(expectedFillingLine));
+
+
+    }
+
+
+    @Test
+    public void testFillingIngredientLowCase() {
+
+
+        String forbiddenFillingType = "FILLING";
+
+
+        when(fillingIngredient.getType()).thenReturn(IngredientType.FILLING);
+
+        burger.setBuns(bun);
+        burger.addIngredient(fillingIngredient);
+
+        String receipt = burger.getReceipt();
+
+
         assertFalse("Типы должны быть в нижнем регистре, без FILLING",
                 receipt.contains(forbiddenFillingType));
     }
+
 
     @Test
     public void testPriceFormat() {
@@ -91,6 +147,42 @@ public class ReceiptFormatTest {
 
         assertTrue("Цена должна быть в формате 'Price: 200,000000'",
                 receipt.contains(expectedPriceLine));
+    }
+
+    @Test
+    public void testCompleteReceiptFormat() {
+
+        when(bun.getName()).thenReturn("Краторная булка");
+        when(bun.getPrice()).thenReturn(100.0f);
+
+        when(sauceIngredient.getType()).thenReturn(IngredientType.SAUCE);
+        when(sauceIngredient.getName()).thenReturn("Соус");
+        when(sauceIngredient.getPrice()).thenReturn(50.0f);
+
+        when(fillingIngredient.getType()).thenReturn(IngredientType.FILLING);
+        when(fillingIngredient.getName()).thenReturn("Говяжий метеорит");
+        when(fillingIngredient.getPrice()).thenReturn(300.0f);
+
+        burger.setBuns(bun);
+        burger.addIngredient(sauceIngredient);
+        burger.addIngredient(fillingIngredient);
+
+
+        String receipt = burger.getReceipt();
+
+
+        String expectedReceipt = String.format(
+                "(==== Краторная булка ====)%n" +
+                        "= sauce Соус =%n" +
+                        "= filling Говяжий метеорит =%n" +
+                        "(==== Краторная булка ====)%n" +
+                        "%n" +
+                        "Price: 550,000000%n"
+        );
+
+
+        assertEquals("Полный рецепт должен соответствовать ожидаемому формату",
+                expectedReceipt, receipt);
     }
 
 

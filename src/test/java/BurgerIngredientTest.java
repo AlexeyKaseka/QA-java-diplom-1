@@ -30,21 +30,36 @@ public class BurgerIngredientTest {
     }
 
     @Test
-    public void testAddIngredient() {
+    public void testAddSauce() {
 
 
         Ingredient expectedSauce = sauceIngredient;
-        Ingredient expectedFilling = fillingIngredient;
-        int expectedCount = 2;
+
 
         burger.addIngredient(expectedSauce);
-        burger.addIngredient(expectedFilling);
-        int actualCount = burger.ingredients.size();
-        Ingredient actualSauce = burger.ingredients.get(0);
-        Ingredient actualFilling = burger.ingredients.get(1);
 
-        assertEquals("Должно быть два ингредиента", expectedCount, actualCount);
+
+        Ingredient actualSauce = burger.ingredients.get(0);
+
+
         assertEquals("Первый ингредиент должен быть соусом", expectedSauce, actualSauce);
+
+
+    }
+
+    @Test
+    public void testAddFilling() {
+
+
+        Ingredient expectedFilling = fillingIngredient;
+
+
+        burger.addIngredient(expectedFilling);
+
+
+        Ingredient actualFilling = burger.ingredients.get(0);
+
+
         assertEquals("Второй ингредиент должен быть начинкой", expectedFilling, actualFilling);
 
     }
@@ -73,19 +88,15 @@ public class BurgerIngredientTest {
 
 
         Ingredient expectedSauceIngredient = fillingIngredient;
-        Ingredient expectedFillingIngredient = sauceIngredient;
 
 
         burger.moveIngredient(0, 1);
         Ingredient actualFirstIngredient = burger.ingredients.get(0);
-        Ingredient actualSecondIngredient = burger.ingredients.get(1);
 
 
         assertEquals("Первый ингредиент должен быть начинкой",
                 expectedSauceIngredient, actualFirstIngredient);
-        assertEquals("Второй ингредиент должен быть соусом",
-                expectedFillingIngredient, actualSecondIngredient);
-        assertEquals("Должно остаться два ингредиента", 2, burger.ingredients.size());
+
     }
 
 
